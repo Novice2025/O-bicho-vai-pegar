@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Dark Space Blue with Gradients -->
+    <!-- Application Structure Plan: The SPA is structured as an interactive lesson. It starts with a header and language toggle. The core content is presented in two thematic sections: "General Expressions" and "Journalist Phrases." Both sections use a grid of interactive cards, where clicking a card reveals a detailed explanation and example. A quiz at the end reinforces learning. This structure is designed to guide the user from general, everyday language to more specific, formal usage, making the content easily consumable and explorable in a logical, step-by-step manner. -->
+    <!-- Visualization & Content Choices: Report Info: A list of general and specific English expressions. Goal: Teach Brazilians the meaning and use of these expressions in different contexts. Viz/Presentation Method: Interactive cards using HTML/CSS for structure and unicode icons for visual cues. Interaction: Click-to-reveal details on cards. A multiple-choice quiz (HTML/JS) is used for assessment. Justification: The card format breaks down complex information into manageable, interactive chunks. The quiz provides active learning reinforcement. Library/Method: Vanilla JS for all interactions. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>Universal English Expressions: "O bicho vai pegar"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A192F;
+            color: #E2E8F0;
+        }
+        .gradient-text-title {
+            background: linear-gradient(90deg, #FF3300, #FFFFCC, #00CCCC, #FF00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .lesson-card {
+            background-color: #112240;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .expression-card {
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .expression-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .expression-card .details {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+            margin-top: 0;
+        }
+        .expression-card.open .details {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .quiz-option {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .quiz-option:hover {
+            background-color: #334155;
+            border-color: #475569;
+        }
+        .quiz-option.correct {
+            background-color: #10B981;
+            border-color: #059669;
+        }
+        .quiz-option.incorrect {
+            background-color: #EF4444;
+            border-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        
+        <div class="text-right">
+            <button id="language-button" class="px-4 py-2 text-sm font-semibold text-white bg-sky-600 rounded-full shadow-lg hover:bg-sky-700 transition-colors duration-300">
+                Mudar para Português
+            </button>
+        </div>
+
+        <!-- English Content -->
+        <div id="english-content">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">How to Say "O bicho vai pegar"</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">Universal English expressions for intense situations.</p>
+                <p class="text-sm text-slate-500">by Daby</p>
+            </header>
+
+            <main class="space-y-12">
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">The Challenge of Direct Translation</h2>
+                    <p class="text-slate-300">
+                        The Brazilian expression <strong class="text-amber-300">"O bicho vai pegar"</strong> is fantastic because it perfectly captures the feeling of an impending, intense situation. Since a literal translation doesn't work, native English speakers use various expressions to convey the same idea. Let's explore some universal options that work in any English-speaking country.
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">General Expressions <span class="text-base font-normal text-slate-400">(Click to reveal details)</span></h2>
+                    <div id="expressions-container-en" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Expression cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">Journalist Phrases <span class="text-base font-normal text-slate-400">(How to say it in the news)</span></h2>
+                    <div id="journalist-expressions-container-en" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Journalist expression cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+                
+                <section id="quiz-container-en" class="lesson-card"></section>
+
+                <section id="writing-practice-en" class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">Practice Your Writing</h2>
+                    <p class="text-slate-300">
+                        Choose one of the expressions you've learned and write a sentence to use it in a real-world situation. Be creative!
+                    </p>
+                    <textarea id="writing-area-en" class="w-full h-32 p-4 mt-4 rounded-lg bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Write your sentence here..."></textarea>
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button id="submit-sentence-en" class="px-6 py-2 bg-sky-600 text-white font-semibold rounded-full hover:bg-sky-700 transition-colors">Submit</button>
+                        <button id="clear-sentence-en" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-full hover:bg-gray-700 transition-colors">Clear</button>
+                    </div>
+                    <div id="writing-feedback-en" class="mt-4 text-center text-green-400 font-bold hidden"></div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Portuguese Content -->
+        <div id="portuguese-content" class="hidden">
+            <header class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold">
+                    <span class="gradient-text-title">Como Dizer "O bicho vai pegar"</span>
+                </h1>
+                <p class="mt-2 text-lg text-slate-400">Expressões universais em inglês para situações intensas.</p>
+                <p class="text-sm text-slate-500">por Daby</p>
+            </header>
+
+            <main class="space-y-12">
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">O Desafio da Tradução Direta</h2>
+                    <p class="text-slate-300">
+                        A expressão brasileira <strong class="text-amber-300">"O bicho vai pegar"</strong> é fantástica porque captura perfeitamente o sentimento de uma situação intensa e iminente. Como uma tradução literal não funciona, falantes nativos de inglês usam várias expressões para transmitir a mesma ideia. Vamos explorar algumas opções universais que funcionam em qualquer país de língua inglesa.
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">Expressões Gerais <span class="text-base font-normal text-slate-400">(Clique para revelar os detalhes)</span></h2>
+                    <div id="expressions-container-pt" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Expression cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-center mb-6">Expressões de Jornalista <span class="text-base font-normal text-slate-400">(Como dizer nas notícias)</span></h2>
+                    <div id="journalist-expressions-container-pt" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Journalist expression cards will be inserted here by JavaScript -->
+                    </div>
+                </section>
+
+                <section id="quiz-container-pt" class="lesson-card"></section>
+
+                <section id="writing-practice-pt" class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">Pratique sua Escrita</h2>
+                    <p class="text-slate-300">
+                        Escolha uma das expressões que você aprendeu e escreva uma frase para usá-la em uma situação do mundo real. Seja criativo!
+                    </p>
+                    <textarea id="writing-area-pt" class="w-full h-32 p-4 mt-4 rounded-lg bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Escreva sua frase aqui..."></textarea>
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button id="submit-sentence-pt" class="px-6 py-2 bg-sky-600 text-white font-semibold rounded-full hover:bg-sky-700 transition-colors">Enviar</button>
+                        <button id="clear-sentence-pt" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-full hover:bg-gray-700 transition-colors">Limpar</button>
+                    </div>
+                    <div id="writing-feedback-pt" class="mt-4 text-center text-green-400 font-bold hidden"></div>
+                </section>
+
+                <section class="lesson-card">
+                    <h2 class="text-2xl font-bold text-sky-400 mb-4">Por que estas expressões funcionam?</h2>
+                    <p class="text-slate-300 mb-4">
+                        A expressão brasileira "o bicho vai pegar" transmite a ideia de que um conflito ou uma situação intensa está prestes a acontecer. 
+
+[Image of a warning sign]
+ As expressões que você aprendeu neste guia foram escolhidas exatamente por causa disso: elas funcionam como sinônimos diretos do sentimento de "problema no horizonte".
+                    </p>
+                    <p class="text-slate-300">
+                        Elas não são traduções literais, mas são o que um nativo de inglês usaria em situações onde o "caldo vai entornar".
+                    </p>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-amber-300 mb-2">Sinônimos Brasileiros Comuns</h3>
+                        <p class="text-slate-400 mb-2">Estas expressões têm um significado muito próximo de "o bicho vai pegar":</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300">
+                            <li>O pau vai quebrar.</li>
+                            <li>A chapa vai esquentar.</li>
+                            <li>A coisa vai ficar feia.</li>
+                            <li>O caldo vai entornar.</li>
+                            <li>A onça vai beber água.</li>
+                            <li>O circo vai pegar fogo.</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const expressionsData = [
+                {
+                    expression: "The situation is about to get serious.",
+                    icon: "⚠️",
+                    explanation: "This is a very direct and clear way to say that an event is moving past the point of being casual and is entering a more significant or difficult phase. It works in almost any context, from a sporting match to a family argument.",
+                    example: "Everyone was laughing, but when the boss walked in, you could tell the situation was about to get serious.",
+                    explanation_pt: "Esta é uma maneira muito direta e clara de dizer que um evento está deixando de ser casual e entrando em uma fase mais significativa ou difícil. Funciona em quase qualquer contexto, de uma partida esportiva a uma discussão familiar.",
+                    example_pt: "Todos estavam rindo, mas quando o chefe entrou, dava para ver que a situação estava prestes a ficar séria.",
+                    category: "general"
+                },
+                {
+                    expression: "A storm is brewing.",
+                    icon: "⛈️",
+                    explanation: "This is a great metaphor to use when you can sense that a major conflict or crisis is building, but hasn't happened yet. It's a universal image that everyone can understand.",
+                    example: "The two politicians were silent, but you could feel the tension. A storm was brewing.",
+                    explanation_pt: "Esta é uma ótima metáfora para usar quando você pode sentir que um grande conflito ou crise está se formando, mas ainda não aconteceu. É uma imagem universal que todos podem entender.",
+                    example_pt: "Os dois políticos estavam em silêncio, mas dava para sentir a tensão. Uma tempestade estava se formando.",
+                    category: "general"
+                },
+                {
+                    expression: "It's crunch time.",
+                    icon: "⏱️",
+                    explanation: "This phrase is perfect for when a critical period has arrived, especially in a game, project, or negotiation where a final, important decision or action is required. It emphasizes the pressure and urgency of the moment.",
+                    example: "We have one day to finish the entire project. It's crunch time.",
+                    explanation_pt: "Esta frase é perfeita para quando um período crítico chegou, especialmente em um jogo, projeto ou negociação onde uma decisão ou ação final e importante é necessária. Enfatiza a pressão e a urgência do momento.",
+                    example_pt: "Temos um dia para terminar o projeto inteiro. É hora da decisão.",
+                    category: "general"
+                },
+                {
+                    expression: "Things are about to come to a head.",
+                    icon: "💥",
+                    explanation: "This expression means that a problem or conflict that has been building up is about to reach its climax or resolution. It implies that a decisive moment is imminent.",
+                    example: "After weeks of small arguments, things are about to come to a head between them.",
+                    explanation_pt: "Esta expressão significa que um problema ou conflito que vem se acumulando está prestes a atingir seu clímax ou resolução. Implica que um momento decisivo é iminente.",
+                    example_pt: "Depois de semanas de pequenas discussões, as coisas estão prestes a chegar ao auge entre eles.",
+                    category: "general"
+                },
+                {
+                    expression: "The gloves are coming off.",
+                    icon: "🥊",
+                    explanation: "This idiom comes from boxing. It means a disagreement is about to become serious and aggressive, with people no longer being polite or holding back.",
+                    example: "The debate was civil at first, but when the topic of taxes came up, you could tell the gloves were coming off.",
+                    explanation_pt: "Este é um idioma que vem do boxe. Significa que uma discordância está prestes a se tornar séria e agressiva, sem que as pessoas sejam mais educadas ou se contenham.",
+                    example_pt: "O debate foi civilizado no início, mas quando o assunto dos impostos surgiu, dava para ver que as luvas estavam sendo tiradas.",
+                    category: "general"
+                },
+                {
+                    expression: "Something's gotta give.",
+                    icon: "⚖️",
+                    explanation: "Used when two conflicting forces have been in a state of tension for a long time and a breaking point is inevitable. It implies a situation that can't be sustained.",
+                    example: "With both sides refusing to compromise, the negotiations were at a standstill. Something's gotta give soon.",
+                    explanation_pt: "Usado quando duas forças em conflito estão em estado de tensão há muito tempo e um ponto de ruptura é inevitável. Implica uma situação que não pode ser sustentada.",
+                    example_pt: "Com ambos os lados se recusando a ceder, as negociações estavam paralisadas. Algo vai ter que ceder em breve.",
+                    category: "general"
+                },
+                {
+                    expression: "You're in for a rough ride.",
+                    icon: "🎢",
+                    explanation: "This is a direct warning to someone that the upcoming experience or situation will be difficult, challenging, or unpleasant.",
+                    example: "They just announced a major company restructuring. We're all in for a rough ride.",
+                    explanation_pt: "Este é um aviso direto a alguém de que a próxima experiência ou situação será difícil, desafiadora ou desagradável.",
+                    example_pt: "Eles acabaram de anunciar uma grande reestruturação da empresa. Todos nós estamos em uma jornada difícil.",
+                    category: "general"
+                },
+                {
+                    expression: "Tensions are mounting.",
+                    icon: "📈",
+                    explanation: "This phrase is often used in news reports to describe a situation where conflict or disagreement is increasing and becoming more intense.",
+                    example: "Tensions are mounting between the two nations after the latest policy announcement.",
+                    explanation_pt: "Esta frase é frequentemente usada em notícias para descrever uma situação onde o conflito ou desacordo está aumentando e se tornando mais intenso.",
+                    example_pt: "As tensões estão aumentando entre as duas nações após o último anúncio de política.",
+                    category: "journalist"
+                },
+                {
+                    expression: "The situation is at a fever pitch.",
+                    icon: "🌡️",
+                    explanation: "A more dramatic expression used to describe a point of extreme excitement, tension, or activity, often just before a major event or breakthrough.",
+                    example: "As the election results came in, the mood in the campaign headquarters was at a fever pitch.",
+                    explanation_pt: "Uma expressão mais dramática usada para descrever um ponto de excitação, tensão ou atividade extrema, muitas vezes pouco antes de um grande evento ou avanço.",
+                    example_pt: "Enquanto os resultados das eleições chegavam, o clima na sede da campanha estava em um ponto de febre.",
+                    category: "journalist"
+                },
+                {
+                    expression: "This could be a watershed moment.",
+                    icon: "🌊",
+                    explanation: "This is used to describe a turning point or a critical moment that will have a significant and lasting impact on the future.",
+                    example: "The new peace treaty could be a watershed moment for the region.",
+                    explanation_pt: "Isso é usado para descrever um ponto de virada ou um momento crítico que terá um impacto significativo e duradouro no futuro.",
+                    example_pt: "O novo tratado de paz pode ser um momento decisivo para a região.",
+                    category: "journalist"
+                }
+            ];
+
+            const quizData = [
+                {
+                    situation_pt: "Seu time de futebol está perdendo por um gol e faltam 5 minutos para acabar o jogo. O que você diria?",
+                    options_pt: ["A storm is brewing.", "It's crunch time.", "Things are about to come to a head."],
+                    answer_pt: "It's crunch time.",
+                    situation_en: "Your soccer team is losing by one goal and there are 5 minutes left in the game. What would you say?",
+                    options_en: ["A storm is brewing.", "It's crunch time.", "Things are about to come to a head."],
+                    answer_en: "It's crunch time."
+                },
+                {
+                    situation_pt: "Dois colegas de trabalho que não se gostam são forçados a trabalhar juntos em um projeto importante. A tensão é visível. Qual expressão usar?",
+                    options_pt: ["The situation is about to get serious.", "It's crunch time.", "A storm is brewing."],
+                    answer_pt: "A storm is brewing.",
+                    situation_en: "Two coworkers who dislike each other are forced to work together on an important project. The tension is visible. Which expression would you use?",
+                    options_en: ["The situation is about to get serious.", "It's crunch time.", "A storm is brewing."],
+                    answer_en: "A storm is brewing."
+                },
+                {
+                    situation_pt: "Você precisa entregar um relatório em uma hora, mas o computador trava. Você sabe que seu chefe ficará furioso se houver atraso. Como descrever a situação?",
+                    options_pt: ["Things are about to come to a head.", "The situation is about to get serious.", "A storm is brewing."],
+                    answer_pt: "The situation is about to get serious.",
+                    situation_en: "You need to submit a report in one hour, but your computer freezes. You know your boss will be furious if there's a delay. How would you describe the situation?",
+                    options_en: ["Things are about to come to a head.", "The situation is about to get serious.", "A storm is brewing."],
+                    answer_en: "The situation is about to get serious."
+                }
+            ];
+
+            function createExpressionCard(data, lang) {
+                const isPt = lang === 'pt';
+                const explanation = isPt ? data.explanation_pt : data.explanation;
+                const example = isPt ? data.example_pt : data.example;
+                return `
+                    <div class="lesson-card expression-card">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-amber-300">${data.expression}</h3>
+                            <span class="text-3xl">${data.icon}</span>
+                        </div>
+                        <div class="details">
+                            <p class="text-slate-300">${explanation}</p>
+                            <p class="mt-4 italic text-slate-400">
+                                <strong class="text-sky-400">${isPt ? "Exemplo:" : "Example:"}</strong> "${example}"
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function renderExpressions() {
+                const generalExpressions = expressionsData.filter(exp => exp.category === 'general');
+                const journalistExpressions = expressionsData.filter(exp => exp.category === 'journalist');
+                
+                const containerEn = document.getElementById('expressions-container-en');
+                const containerPt = document.getElementById('expressions-container-pt');
+                containerEn.innerHTML = generalExpressions.map(d => createExpressionCard(d, 'en')).join('');
+                containerPt.innerHTML = generalExpressions.map(d => createExpressionCard(d, 'pt')).join('');
+
+                const journalistContainerEn = document.getElementById('journalist-expressions-container-en');
+                const journalistContainerPt = document.getElementById('journalist-expressions-container-pt');
+                journalistContainerEn.innerHTML = journalistExpressions.map(d => createExpressionCard(d, 'en')).join('');
+                journalistContainerPt.innerHTML = journalistExpressions.map(d => createExpressionCard(d, 'pt')).join('');
+
+                document.querySelectorAll('.expression-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('open');
+                    });
+                });
+            }
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+
+            function renderQuiz(lang) {
+                const isPt = lang === 'pt';
+                const quizContainer = document.getElementById(isPt ? 'quiz-container-pt' : 'quiz-container-en');
+                
+                if (currentQuestionIndex >= quizData.length) {
+                    quizContainer.innerHTML = `
+                        <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Quiz Finalizado!" : "Quiz Complete!"}</h2>
+                        <p class="text-center text-lg mt-4 text-slate-300">${isPt ? "Sua pontuação:" : "Your score:"} ${score} / ${quizData.length}</p>
+                        <div class="text-center mt-6">
+                            <button id="restart-quiz-${lang}" class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-full hover:bg-amber-600 transition-colors">
+                                ${isPt ? "Recomeçar" : "Restart"}
+                            </button>
+                        </div>
+                    `;
+                     document.getElementById(`restart-quiz-${lang}`).addEventListener('click', () => {
+                        currentQuestionIndex = 0;
+                        score = 0;
+                        renderQuiz(lang);
+                    });
+                    return;
+                }
+                
+                const question = quizData[currentQuestionIndex];
+                const situation = isPt ? question.situation_pt : question.situation_en;
+                const options = isPt ? question.options_pt : question.options_en;
+                const answer = isPt ? question.answer_pt : question.answer_en;
+
+                const optionsHtml = options.map(option => `
+                    <button class="quiz-option w-full text-left p-4 rounded-lg font-semibold" data-answer="${option}">${option}</button>
+                `).join('');
+
+                quizContainer.innerHTML = `
+                    <h2 class="text-2xl font-bold text-center text-sky-400">${isPt ? "Teste seu Conhecimento! 🧐" : "Test Your Knowledge! 🧐"}</h2>
+                    <div class="mt-6">
+                        <p class="text-lg font-medium text-slate-300 mb-4">${isPt ? "Situação:" : "Situation:"} ${situation}</p>
+                        <div class="space-y-3" id="options-container-${lang}">
+                            ${optionsHtml}
+                        </div>
+                        <div id="feedback-${lang}" class="mt-4 text-center font-bold"></div>
+                    </div>
+                `;
+
+                document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const selectedAnswer = e.target.dataset.answer;
+                        const feedbackEl = document.getElementById(`feedback-${lang}`);
+                        
+                        document.querySelectorAll(`#options-container-${lang} .quiz-option`).forEach(btn => {
+                            btn.disabled = true;
+                        });
+
+                        if (selectedAnswer === answer) {
+                            e.target.classList.add('correct');
+                            feedbackEl.textContent = isPt ? 'Correto! 🎉' : 'Correct! 🎉';
+                            feedbackEl.className = 'mt-4 text-center font-bold text-green-400';
+                            score++;
+                        } else {
+                            e.target.classList.add('incorrect');
+                             feedbackEl.textContent = `${isPt ? 'Incorreto. A resposta certa é:' : 'Incorrect. The right answer is:'} ${answer}`;
+                            feedbackEl.className = 'mt-4 text-center font-bold text-red-400';
+                             document.querySelector(`#options-container-${lang} .quiz-option[data-answer="${answer}"]`).classList.add('correct');
+                        }
+                        
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            renderQuiz(lang);
+                        }, 2000);
+                    });
+                });
+            }
+
+            function setupWritingPractice() {
+                const writingAreaEn = document.getElementById('writing-area-en');
+                const submitButtonEn = document.getElementById('submit-sentence-en');
+                const feedbackDivEn = document.getElementById('writing-feedback-en');
+                const clearButtonEn = document.getElementById('clear-sentence-en');
+
+                const writingAreaPt = document.getElementById('writing-area-pt');
+                const submitButtonPt = document.getElementById('submit-sentence-pt');
+                const feedbackDivPt = document.getElementById('writing-feedback-pt');
+                const clearButtonPt = document.getElementById('clear-sentence-pt');
+
+                // English
+                submitButtonEn.addEventListener('click', () => {
+                    if (writingAreaEn.value.trim() !== "") {
+                        feedbackDivEn.textContent = "Great sentence! You're using the expressions like a pro. ✨";
+                        feedbackDivEn.classList.remove('hidden');
+                        writingAreaEn.disabled = true;
+                    } else {
+                        feedbackDivEn.textContent = "Please write a sentence before submitting.";
+                        feedbackDivEn.classList.remove('hidden');
+                    }
+                });
+
+                clearButtonEn.addEventListener('click', () => {
+                    writingAreaEn.value = "";
+                    writingAreaEn.disabled = false;
+                    feedbackDivEn.classList.add('hidden');
+                });
+                
+                // Portuguese
+                submitButtonPt.addEventListener('click', () => {
+                    if (writingAreaPt.value.trim() !== "") {
+                        feedbackDivPt.textContent = "Ótima frase! Você está usando as expressões como um profissional. ✨";
+                        feedbackDivPt.classList.remove('hidden');
+                        writingAreaPt.disabled = true;
+                    } else {
+                        feedbackDivPt.textContent = "Por favor, escreva uma frase antes de enviar.";
+                        feedbackDivPt.classList.remove('hidden');
+                    }
+                });
+
+                clearButtonPt.addEventListener('click', () => {
+                    writingAreaPt.value = "";
+                    writingAreaPt.disabled = false;
+                    feedbackDivPt.classList.add('hidden');
+                });
+            }
+
+            const portugueseContent = document.getElementById('portuguese-content');
+            const englishContent = document.getElementById('english-content');
+            const languageButton = document.getElementById('language-button');
+
+            languageButton.addEventListener('click', () => {
+                const isEnglishVisible = !englishContent.classList.contains('hidden');
+                englishContent.classList.toggle('hidden', isEnglishVisible);
+                portugueseContent.classList.toggle('hidden', !isEnglishVisible);
+                languageButton.textContent = isEnglishVisible ? 'Switch to English' : 'Mudar para Português';
+            });
+            
+            renderExpressions();
+            renderQuiz('en');
+            renderQuiz('pt');
+            setupWritingPractice();
+        });
+    </script>
+</body>
+</html>
